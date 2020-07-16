@@ -86,7 +86,29 @@ exports
 
 모듈을 생성할 때 사용
 
+module.js
+
+```
+exports.abs = function(number){         // 절대값 반환
+    if(0<number){
+        return number;
+    }else{
+        return -number;
+    }
+};
+
+exports.circleArea = function(radius){  // 원의 넓이 반환
+    return radius*radius*Math.PI;
+};
 ```
 
+main.js
+
+```
+// 모듈을 갖고올때 require 사용
+var module = require('./module.js');
+
+console.log('abs(-273) = %d', module.abs(-273));
+console.log('circleArea(3) = %d', module.circleArea(3))
 ```
 
