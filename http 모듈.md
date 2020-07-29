@@ -89,5 +89,43 @@ HTMLPage.html
 ```
 
 - http.file.js에서 readFile은 html 파일 뿐만 아니라 동영상, 이미지까지 모두 가능하다.
+
 - MIME 형식
+  
   - 다른 파일을 읽을 경우"Content-Type" : "text/파일 확장명" 또는 "image/파일 확장명" 또는 "video/파일 확장명" 또는 "audio/파일 확장명"으로 작성하면 된다.
+  
+  
+
+쿠키 생성
+
+쿠키란? 키와 값이 들어있는 작은 데이터 조각 -> 이름,  값, 파기 날짜, 경로 정보
+
+```
+// 쿠키 저장 및 출력
+var http = require('http');
+
+// 서버 생성 실행
+http.createServer(function(request, response){
+    // 변수 생성
+    var date = new Date();
+    date.setDate(date.getDate() + 7);
+
+    // 쿠키 입력
+    response.writeHead(200, {
+        'Content-Type' : 'text/html',
+        'Set-Cookie' : [
+            'breakfast = toast; Expires = ' + date.toUTCString(),
+            'dinner = chicken'
+        ]
+    })
+
+    // 쿠키 출력
+    response.end('<h1>' + request.headers.cookie + '</h1>');
+}).listen(52273, function(){
+    console.log('Server Running at http://127.0.0.1/52273');
+```
+
+
+
+
+
