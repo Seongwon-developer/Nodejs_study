@@ -359,6 +359,55 @@ http.createServer(function(request, response){
 쿠키 생성 및 추출
 
 ```
+// 모듈 추출
+var http = require('http');
 
+// 모듈 사용
+http.createServer(function(request, response){
+    // get cookie
+    var cookie = request.headers.cookie;
+
+    // ser cookie
+    response.writeHead(200, {
+        'Content_Type' : 'text/html',
+        'Set-Cookie' : ['name = Seongwon', 'region = Jeju']
+    });
+
+    // 응답
+    response.end('<h1>' + JSON.stringify(cookie) + '</h1>');
+}).listen(3000, function(){
+    console.log('Server Running');
+});
+```
+
+
+
+쿠키 분해
+
+```
+var http = require('http');
+
+http.createServer(function(request, response){
+    // 쿠키 추출 후 분해
+    var cookie = request.headers.cookie;
+    cookie = cookie.split(';').map(function(element){
+        var element = element.split('=');
+        return {
+            key : element[0],
+            value : element[1]
+        };
+    });
+
+    // 쿠키 생성
+    response.writeHead(200, {
+        'Content-Type' : 'text./html',
+        'Set-Cookie' : ['name = Seongwon', 'region = Jeju']
+    });
+
+    // 응답
+    response.end('<h1>' + JSON.stringify(cookie) + '</h1>');
+}).listen(3000, function(){
+    console.log('Server Running');
+});
 ```
 
