@@ -303,3 +303,92 @@ app.use(express.function(){			// 자신이 미들웨어를 직접 만든 것
 });
 ```
 
+### logger 미들웨어
+
+```
+// 모듈 추출
+var http = require('http');
+var express = require('express');
+
+// 서버 생성
+var app = express();
+
+// logger 미들웨어 생성, 호출 방식과 호출 시간 출력
+app.use(express.logger(':method + :date'));
+// 미들웨어 생성
+app.use(function(request, response){
+    response.send('<h1>express Basic</h1>');
+});
+
+// 서버 실행
+http.createServer(app).listen(3000, function(){
+    console.log('Server Running');
+});
+```
+
+- 콘솔 창에 보면 로거가 출력되어 있다.
+- 여기서 logger란?
+  - 데이터 정보들을 의미한다.
+- 로거 미들웨어의 토큰
+
+| 토큰           | 설명                     |
+| -------------- | ------------------------ |
+| :req[header]   | 요청 헤더를 나타냄       |
+| :res[header]   | 응답 헤더를 나타냄       |
+| :http-version  | http 버전을 나타냄       |
+| :response-time | 응답 시간을 나타냄       |
+| :remote-addr   | 원격 주소를 나타냄       |
+| :date          | 요청 시간을 나타냄       |
+| :method        | 요청 방식을 나타냄       |
+| :url           | 요청 URL을 나타냄        |
+| :referrer      | 이전 URL을 나타냄        |
+| :User-Agent    | 사용자 에이전트를 나타냄 |
+| :status        | 상태 코드를 나타냄       |
+
+- 여러 토큰을 하나로 묶는 기본 형식
+
+| 형식    | 설명                                                         |
+| ------- | ------------------------------------------------------------ |
+| default | remote-addr, date, method, url. http-version, status, res, referrer, user-agent |
+| short   | remote-addr, method, url, http-version, status, res, response-time |
+| tiny    | method, url, status, res, response-time                      |
+
+
+
+### static 미들웨어
+
+웹 서버에서 파일을 제공하는 방법 제공
+
+```
+// 모듈 추출
+var http = require('http');
+var express = require('express');
+
+// 서버 생성
+var app = express();
+
+// logger 미들웨어 생성
+app.use(express.logger());
+// static 미들웨어 생성
+app.use(express.static(__dirname + '/public'));
+app.use(function(request, response){
+    // 응답
+    response.writeHead(200, {'Content-Type' : 'text/html'});
+    response.end("<img src='me.jpg' width='100%' />");
+});
+
+// 서버 실행
+http.createServer(app).listen(3000, function(){
+    console.log('Server Running');
+});
+```
+
+- 웹 페이지에 사진이 뜬 것을 볼 수 있음
+
+
+
+### router 미들웨어
+
+페이지 라우팅을 구현하는 미들웨어
+
+페이지 라우팅은 클라이언트 요청에 적절한 페이지를 제공하는 기술
