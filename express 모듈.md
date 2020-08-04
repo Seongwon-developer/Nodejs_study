@@ -392,3 +392,33 @@ http.createServer(app).listen(3000, function(){
 페이지 라우팅을 구현하는 미들웨어
 
 페이지 라우팅은 클라이언트 요청에 적절한 페이지를 제공하는 기술
+
+```
+// 모듈 추출
+var http = require('http');
+var express = require('express');
+
+// 서버 생성
+var app = express();
+
+// 미들웨어 생성
+app.use(express.logger());
+app.use(app.router);
+
+// 라우터 설정
+app.get('/page/:id', function(request, response){
+    // 변수 생성
+    var name = request.param('id');
+
+    // 응답
+    response.send('<h1>' + name + ' Page</h1>');
+});
+
+// 서버 실행
+http.createServer(app).listen(3000, function(){
+    console.log('Server Running');
+});
+```
+
+- localhost:3000/page/273 -> 페이지에 273 Page 출력
+
