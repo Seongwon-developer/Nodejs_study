@@ -422,3 +422,154 @@ http.createServer(app).listen(3000, function(){
 
 - localhost:3000/page/273 -> 페이지에 273 Page 출력
 
+
+
+### cookie parser 미들웨어
+
+요청 쿠키를 추출하는 미들웨어
+
+```
+// 모듈 추출
+var http = require('http');
+var express = require('express');
+var logger = require('morgan');
+
+// 서버 생성
+var app = express();
+
+// 미들웨어 생성
+app.use(logger());
+// app.use(app.router);
+
+// 라우팅 생성
+app.get('/getCookie', function(request, response){
+    response.send(request.cookies);
+});
+
+app.get('setCookit', function(request, response){
+	
+    response.cookie('string', 'cookie');
+    // 쿠키 메서드의 옵션 속성
+    response.cookie('json', {
+        name : 'cookie',
+        property : 'delicious'
+    });
+
+    response.redirect('/getCookie');
+});
+
+// 서버 실행
+http.createServer(app).listen(3000, function(){
+    console.log('Server Running');
+});
+```
+
+- express 4v 이상 : express.logger x -> morgan 모듈 이용
+
+- cookie 메서드의 옵션 속성
+
+| 속성 이름 | 설명                             |
+| --------- | -------------------------------- |
+| httpOnly  | 클라이언트의 쿠키 접근 권한 지정 |
+| secure    | secure 속성 지정                 |
+| expires   | expires 속성 지정                |
+| maxAge    | 상대적으로 expires 속성 지정     |
+| path      | path 속성 지정                   |
+
+
+
+### body parser 미들웨어
+
+POST 요청 데이터를 추출하는 미들웨어
+
+app.js
+
+```
+// 모듈 추출
+var fs = require('fs');
+var http = require('http');
+var express = require('express');
+
+// 서버 생성
+var app = express();
+
+// 미들웨어 생성
+app.use(express.cookieParser());		// 쿠키 데이터 이용시 필요
+app.use(express.bodyParser());			// 변수 데이터 이용시 필요
+app.use(app.router);
+
+// 라우터 설정
+app.get('/', function(req, res){
+    // 기본 메인 페이지에서의 설정
+    if(req.cookies.auth){
+        // auth 쿠키가 참이면 => 로그인 성공
+        res.send('<h1>Login Success</h1>');
+    }else{
+        // auth 쿠키가 거짓이면 => 로그인이 안됐다는 말
+        // 로그인이 안되어있으면 로그인 페이지로 강제 이동
+        res.redirect('/login');
+    }
+});
+
+app.get('/login', function(req, res){
+    // 로그인 페이지에서의 설정
+    fs.readFile('login.html', function(error, data){
+        // html 파일을 읽고 출력
+        res.send(data.toString());
+        // 데이터 응답
+    });
+});
+
+// 로그인 페이지에서의 근본?적인 설정
+app.post('/login', function(req, res){
+    var login = req.param('login');
+    var password = req.param('password');
+
+    console.log(req.body);
+
+    if(login == 'seongwon' && password =='1234'){
+        // 일치하면 auth 쿠키 생성
+        res.cookie('auth', true);
+        // 메인페이지로 이동, 첫 번째 app.get 설정으로
+        res.redirect('/')
+    }else{
+        res.redirect('/login');
+    }
+});
+
+http.createServer(app).listen(3000, function(){
+    console.log('Server Running');
+});
+```
+
+login.html
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+</head>
+<body>
+    <h1>Login Page</h1>
+    <hr/>
+    <form method='post'?
+        <table>
+            <tr>
+                <td><label>Username</label></td>
+                <td><input type='text' name='login' /></td>
+            </tr>
+            <tr>
+                <td><label>Password</label></td>
+                <td><input type='Password' name='password' /></td>
+            </tr>
+        </table>
+        <input type='submit' name "" />
+    </form>
+</body>
+</html>
+```
+
+- get과 post의 차이
+  - get : 페이지에 들어갔을 때의 응답
+  - post : 페이지 안에서의 변수 값이나 함수들에 의한 응답
