@@ -1,0 +1,4 @@
+JSON.stringify(object)
+: object(객체)를 JSON형식의 파일로 변환
+JSON.parse(JSON)
+: JSON 파일을 객체 형태로 변환

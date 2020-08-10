@@ -19,8 +19,8 @@ app.configure(function(){
   app.use(app.router);                    // 라우팅
 
   // 정적 리소스 처리
-  app.use(require('stylus'.middleware(__dirname + '/public')));
-  app.use(require.static(path.join(__dirname, 'public')));
+  app.use(require('stylus').middleware(__dirname + '/public'));
+  app.use(express.static(path.join(__dirname, 'public')));
 });
 
 app.configure('development', function(){    // 개발 버전
